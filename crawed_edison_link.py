@@ -31,7 +31,7 @@ browser = webdriver.Chrome(options=options)
 target_url = 'https://www.edison.tech/'
 
 
-selenium_url = [] #selenium待爬队列
+selenium_url = [] #selenium已爬队列
 requests_url = [] #requests请求队列
 
 
@@ -123,6 +123,6 @@ if __name__ == '__main__':
         if src and ('edison.tech' in src or 'easilydo.com' in src) and src[:4]=='http':
             status_code = get_status_code(src)
             if status_code != 200:
-                print(src,':' ,status_code)
+                print('request:',src,':',status_code,'invalid link')
             else:
                 print('request:',src)
