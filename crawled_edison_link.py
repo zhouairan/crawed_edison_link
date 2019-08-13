@@ -19,7 +19,7 @@ options=Options()
 options.headless=True
 options.add_argument('--proxy-server=socks5://127.0.0.1:1080')
 options.add_argument('Connection=close')
-
+#set proxy
 proxies={'socks5': 'http://127.0.0.1:1080'}
 headers={}
 headers['User-Agent']='Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36'
@@ -31,11 +31,11 @@ browser = webdriver.Chrome(options=options)
 target_url = 'https://www.edison.tech/'
 
 
-selenium_url = [] #selenium已爬队列
-requests_url = [] #requests请求队列
+selenium_url = [] #selenium crawled list
+requests_url = [] #requests list
 
 
-#selenium获取网页
+#get page by selenium 
 def get_url_in_selenium(url, webdriver): 
 
     global selenium_url
@@ -43,7 +43,7 @@ def get_url_in_selenium(url, webdriver):
     
     if url in selenium_url: 
         return None
-
+    #resource url append to request list
     if ('css' in url ) or ('js' in url) or ('png' in url) or ('pdf' in url) or ('jpg' in url) or ('zip' in url):
         requests_url.append(url)
 
@@ -53,7 +53,7 @@ def get_url_in_selenium(url, webdriver):
         return webdriver
 
 
-#获取网页内的URL
+#get url in the page
 def get_url(webdriver):
     
     global requests_url
@@ -77,22 +77,22 @@ def get_url(webdriver):
         get_href = [get_url_href.get_attribute('href') for get_url_href in get_elem_href]
          
 
-        get_img.extend(get_link)
-        get_src.extend(get_img)
-        requests_url.extend(get_src)
+        get_img.extend(get_link)  #resource
+        get_src.extend(get_img)   #resource
+        requests_url.extend(get_src) #resource
         
         return get_href
 
 
-#获取状态码
+#get status code by requests
 def get_status_code(url):
     response = requests.get(url,headers=headers)
     return response.status_code
 
 
-#递归获取符合条件的URL
-depth = 6 #设置深度
-count = 0 #计数器
+#loop iterates
+depth = 6 #depth
+count = 0 #counter
 def selenium_crawl(src,dep,count,driver):
     
     global requests_url
@@ -106,13 +106,13 @@ def selenium_crawl(src,dep,count,driver):
                 src_child = get_url(webdriver = selenium_driver)
                 count += 1
 
-                if not src_child: #不存在子节点
+                if not src_child: #has no child link
                     requests_url.append(src)
                     return
                 else:
                     print('selenium:',src)
-                    selenium_url.append(src)
-                    for i in src_child: #遍历子节点
+                    selenium_url.append(src) 
+                    for i in src_child: #go through all the child links
                         selenium_crawl(i,dep,count,driver)  
 
 
